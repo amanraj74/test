@@ -20,3 +20,10 @@ jilo_health_data.csv
 # Audio test files
 *.wav
 test_output.wav
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local

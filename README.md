@@ -132,6 +132,16 @@ uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 ### 6. Test
 Open [http://localhost:8000/docs](http://localhost:8000/docs) for Swagger UI.
 
+### 7. React Frontend (replaces Streamlit)
+```bash
+cd frontend
+cp .env.example .env   # set VITE_API_BASE_URL (default http://localhost:8000)
+npm install
+npm run dev            # start Vite dev server
+# npm run build        # production bundle
+```
+The React UI calls the same FastAPI endpoints used by the Streamlit dashboard (patients, alerts, dashboard stats, calls).
+
 ---
 
 ## 🔌 API Endpoints
