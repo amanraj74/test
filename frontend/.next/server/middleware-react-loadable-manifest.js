@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components\\\\MapWrapper.tsx -> ./PatientMap\":{\"id\":\"components\\\\MapWrapper.tsx -> ./PatientMap\",\"files\":[\"static/css/_app-pages-browser_components_PatientMap_tsx.css\",\"static/chunks/_app-pages-browser_components_PatientMap_tsx.js\"]}}"
