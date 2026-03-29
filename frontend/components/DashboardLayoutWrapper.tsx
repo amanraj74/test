@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Activity, Bell, Users, PhoneCall, LayoutDashboard,
-  Mic, FileText, DollarSign, Syringe, AlertTriangle,
+  Mic, FileText, DollarSign, Syringe, AlertTriangle, Workflow,
 } from "lucide-react";
 
 const navItems = [
@@ -17,6 +17,7 @@ const navItems = [
   { name: "Alerts", href: "/alerts", icon: AlertTriangle },
   { name: "Cost Analysis", href: "/cost-analysis", icon: DollarSign },
   { name: "Vaccination", href: "/vaccination", icon: Syringe },
+  { name: "Workflow Builder", href: "/workflows", icon: Workflow },
 ];
 
 const titleMap: Record<string, string> = {
@@ -28,6 +29,7 @@ const titleMap: Record<string, string> = {
   "/alerts": "Doctor Alerts",
   "/cost-analysis": "Cost Analysis",
   "/vaccination": "Vaccination Tracker",
+  "/workflows": "Workflow Builder",
 };
 
 export default function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {

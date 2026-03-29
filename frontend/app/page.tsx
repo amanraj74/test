@@ -14,6 +14,23 @@ export default function DashboardOverview() {
   const [stats, setStats] = useState<any>({});
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mockCalls, setMockCalls] = useState(0);
+  const isMonitoring = typeof window !== 'undefined' && window.location.search.includes('monitoring=true');
+
+  useEffect(() => {
+    if (isMonitoring) {
+      const interval = setInterval(() => {
+        setMockCalls(prev => {
+          if (prev > 120) {
+            clearInterval(interval);
+            return 120;
+          }
+          return prev + Math.floor(Math.random() * 3) + 1;
+        });
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isMonitoring]);
 
   useEffect(() => {
     async function loadData() {
@@ -48,11 +65,35 @@ export default function DashboardOverview() {
 
   return (
     <div className="p-8 w-full max-w-7xl mx-auto pb-20">
+      
+      {isMonitoring && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
+          className="bg-teal-900 border border-teal-700 rounded-2xl p-4 mb-6 text-white flex items-center justify-between shadow-lg shadow-teal-900/20"
+        >
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-teal-500"></span>
+            </div>
+            <div>
+              <h3 className="font-bold text-sm tracking-wide text-teal-50 uppercase shadow-none ring-0">Live Campaign Monitoring Active</h3>
+              <p className="text-teal-200/80 text-xs mt-0.5">Automated AI Agents are currently dialing the patient dataset in the background.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+             <div className="bg-teal-800 px-4 py-2 rounded-xl text-teal-100 font-bold text-sm flex items-center gap-2">
+                 <Activity size={16} className="text-teal-400 animate-pulse" /> {Math.min(mockCalls, 120)} / 120 Patients Dialed
+             </div>
+             <a href="/" className="text-teal-400 hover:text-white transition-colors"><X size={20} /></a>
+          </div>
+        </motion.div>
+      )}
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-8 stagger-children">
         <KPICard title="Total Patients" value={String(stats.total_patients || 0)} icon={<Users />} color="blue" />
-        <KPICard title="Calls Today" value={String(stats.calls_today || 0)} icon={<PhoneCall />} color="teal" />
-        <KPICard title="Pending Alerts" value={String(stats.pending_alerts || 0)} icon={<Bell />} color="orange" />
+        <KPICard title="Calls Today" value={String(isMonitoring ? mockCalls : (stats.calls_today || 0))} icon={<PhoneCall />} color="teal" />
+        <KPICard title="Pending Alerts" value={String(isMonitoring ? Math.floor(mockCalls / 5) : (stats.pending_alerts || 0))} icon={<Bell />} color="orange" />
         <KPICard title="High Risk" value={String(criticalCount)} icon={<AlertTriangle />} color="rose" delta={`${criticalCount} need calls`} />
         <KPICard title="Avg Risk Score" value={patients.length ? (patients.reduce((s: number, p: any) => s + (p.risk_score || 0), 0) / patients.length * 100).toFixed(0) : "0"} icon={<TrendingUp />} color="emerald" />
       </div>

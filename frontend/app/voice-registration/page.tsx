@@ -2,15 +2,33 @@
 
 import React, { useState } from "react";
 import VoiceWave, { AssistantState } from "@/components/VoiceWave";
-import { Mic, CheckCircle2, User, Phone, Edit3, Upload, FileText, FlaskConical, Loader2 } from "lucide-react";
-import { extractEntities, uploadIntakeAudio } from "@/lib/api";
+import { Mic, CheckCircle2, User, Phone, Edit3, Upload, FileText, FlaskConical, Loader2, AlertTriangle } from "lucide-react";
+import { extractIntakeEntities, uploadIntakeAudio } from "@/lib/api";
 
 const LANGUAGES = [
   { label: "Hindi", value: "hi-IN" },
   { label: "English", value: "en-IN" },
   { label: "Bengali", value: "bn-IN" },
-  { label: "Tamil", value: "ta-IN" },
+  { label: "Marathi", value: "mr-IN" },
   { label: "Telugu", value: "te-IN" },
+  { label: "Tamil", value: "ta-IN" },
+  { label: "Gujarati", value: "gu-IN" },
+  { label: "Urdu", value: "ur-IN" },
+  { label: "Kannada", value: "kn-IN" },
+  { label: "Odia/Oriya", value: "or-IN" },
+  { label: "Malayalam", value: "ml-IN" },
+  { label: "Punjabi", value: "pa-IN" },
+  { label: "Assamese", value: "as-IN" },
+  { label: "Maithili", value: "mai-IN" },
+  { label: "Santali", value: "sat-IN" },
+  { label: "Kashmiri", value: "ks-IN" },
+  { label: "Nepali", value: "ne-IN" },
+  { label: "Konkani", value: "kok-IN" },
+  { label: "Sindhi", value: "sd-IN" },
+  { label: "Dogri", value: "doi-IN" },
+  { label: "Manipuri", value: "mni-IN" },
+  { label: "Bodo", value: "brx-IN" },
+  { label: "Sanskrit", value: "sa-IN" }
 ];
 
 const DEMO_TRANSCRIPTS: Record<string, string> = {
@@ -36,6 +54,7 @@ export default function VoiceRegistrationPage() {
   const [processing, setProcessing] = useState(false);
   const [extracted, setExtracted] = useState<any>(null);
   const [registered, setRegistered] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     name: "", age: "", phone: "", gender: "male",
@@ -53,6 +72,7 @@ export default function VoiceRegistrationPage() {
     setProcessing(true);
     setExtracted(null);
     setRegistered(false);
+    setError(null);
     setAssistantState("listening");
     setTimeout(() => setAssistantState("processing"), 1500);
 
@@ -62,12 +82,18 @@ export default function VoiceRegistrationPage() {
       if (mode === "audio" && audioFile) {
         // Upload audio and run full STT + NLP pipeline
         const uploadRes = await uploadIntakeAudio(audioFile, language);
+        if (uploadRes.error || uploadRes.extracted?.error) {
+          throw new Error(uploadRes.error || uploadRes.extracted?.error);
+        }
         result = uploadRes.extracted;
         // Optionally update the UI to show the transcript that came back
         setTranscript(uploadRes.transcript || "");
       } else {
-        // Just run straight NLP extraction on the text
-        result = await extractEntities(text, ["general", "diabetes", "hypertension"], language);
+        // Just run straight NLP extraction on the text using the intake specific route
+        result = await extractIntakeEntities(text, ["general", "diabetes", "hypertension"], language);
+        if (result.error) {
+          throw new Error(result.error);
+        }
       }
       
       setAssistantState("speaking");
@@ -85,8 +111,9 @@ export default function VoiceRegistrationPage() {
         riskTier: result.escalation_flag ? "CRITICAL" : result.medication_adherence === false ? "HIGH" : "MODERATE",
         riskScore: result.escalation_flag ? 0.85 : 0.5,
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setError(e.message || "An API error occurred (possibly Rate Limit). Please try again in a few moments.");
     }
 
     setTimeout(() => {
@@ -210,6 +237,16 @@ export default function VoiceRegistrationPage() {
           <p className="text-center mt-3 text-slate-400 text-xs px-4">
             {processing ? "Processing voice data through Groq NLP pipeline..." : "Press extract to begin AI processing."}
           </p>
+
+          {error && (
+            <div className="mt-6 w-full max-w-sm mx-auto bg-rose-50/80 border border-rose-200 rounded-xl p-4 flex items-start gap-3 text-rose-600 animate-fade-in-up">
+              <AlertTriangle size={18} className="mt-0.5 shrink-0" />
+              <div className="flex-1">
+                <h5 className="font-bold text-sm mb-1">Extraction Failed</h5>
+                <p className="text-xs font-medium opacity-90">{error}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

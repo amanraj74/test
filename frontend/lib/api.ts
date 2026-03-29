@@ -66,6 +66,20 @@ export async function extractEntities(
   return res.json();
 }
 
+export async function extractIntakeEntities(
+  transcript: string,
+  conditions: string[] = ["general"],
+  language: string = "hi-IN"
+) {
+  const res = await fetch(`${API_BASE}/nlp/intake`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ transcript, conditions, language }),
+  });
+  if (!res.ok) throw new Error("Intake extraction failed");
+  return res.json();
+}
+
 export async function uploadIntakeAudio(file: File, language: string = "hi-IN") {
   const formData = new FormData();
   formData.append("file", file);

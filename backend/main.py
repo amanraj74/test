@@ -41,7 +41,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -336,6 +336,15 @@ async def extract(req: ExtractRequest):
     if not result:
         raise HTTPException(500, "Extraction failed")
     return result
+
+@app.post("/nlp/intake")
+async def extract_intake(req: ExtractRequest):
+    """Extract patient registration info from a spoken/pasted transcript."""
+    from backend.voice_intake import extract_intake_entities
+    extracted = extract_intake_entities(req.transcript, req.language)
+    if not extracted:
+        raise HTTPException(500, "Intake extraction failed")
+    return extracted
 
 
 # ══════════════════════════════════════════════════════════
