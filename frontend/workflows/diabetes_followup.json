@@ -1,0 +1,31 @@
+{
+  "id": "diabetes_followup",
+  "name": "Chronic Care: Diabetes Check-in",
+  "steps": [
+    {
+      "step_id": "consent",
+      "question": "Namaste, I am VaaniCare. Are you comfortable answering a few quick questions about your health today?",
+      "field": "consent_captured",
+      "type": "boolean",
+      "on_fail": "end_call"
+    },
+    {
+      "step_id": "adherence",
+      "question": "Kya aapne aaj apni diabetes ki dawai waqt par li hai?",
+      "field": "medication_adherence",
+      "type": "boolean"
+    },
+    {
+      "step_id": "symptoms_check",
+      "question": "Kya aapko weakness, chakar aana, ya seene mein koi dard mehsoos ho raha hai?",
+      "field": "symptoms",
+      "type": "array"
+    },
+    {
+      "step_id": "sugar_level",
+      "question": "Kya aapne pichle 2 din mein apni sugar check ki thi? Agar haan, toh reading kya thi?",
+      "field": "latest_reading",
+      "type": "number"
+    }
+  ]
+}

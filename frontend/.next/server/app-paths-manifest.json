@@ -1,11 +1,1 @@
-{
-  "/page": "app/page.js",
-  "/workflows/page": "app/workflows/page.js",
-  "/alerts/page": "app/alerts/page.js",
-  "/patients/page": "app/patients/page.js",
-  "/vaccination/page": "app/vaccination/page.js",
-  "/demo-call/page": "app/demo-call/page.js",
-  "/admission-follow-up/page": "app/admission-follow-up/page.js",
-  "/voice-registration/page": "app/voice-registration/page.js",
-  "/cost-analysis/page": "app/cost-analysis/page.js"
-}
+{}

@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:ws": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^1.47.0",
+    "@supabase/supabase-js": "^2.100.1",
+    "axios": "^1.14.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.17",
     "leaflet": "^1.9.4",
@@ -18,7 +22,9 @@
     "react-dom": "^18",
     "react-leaflet": "^4.2.1",
     "recharts": "^2.13.0",
-    "tailwind-merge": "^2.5.4"
+    "tailwind-merge": "^2.5.4",
+    "twilio": "^5.13.1",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.14",
